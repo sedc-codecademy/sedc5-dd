@@ -11,6 +11,12 @@ namespace FirstApp
     {
         static void Main(string[] args)
         {
+            FirstFiltering();
+
+        }
+
+        private static void FirstConnection()
+        {
             SqlConnection connection = new SqlConnection("Server=.;Database=BooksDb;Trusted_Connection=True;");
             connection.Open();
 
@@ -21,6 +27,27 @@ namespace FirstApp
             int authorCount = (int)cmd.ExecuteScalar();
 
             Console.WriteLine(authorCount);
+
+            connection.Close();
+        }
+
+        private static void FirstFiltering()
+        {
+            SqlConnection connection = new SqlConnection("Server=.;Database=BooksDb;Trusted_Connection=True;");
+            connection.Open();
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = connection;
+            cmd.CommandText = "select * from Authors";
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+            while (dr.Read())
+            {
+                int authorId = dr.GetInt32(0);
+                string name = dr.GetString(1);
+                Console.WriteLine($"{authorId} - {name}");
+            }
 
             connection.Close();
         }
