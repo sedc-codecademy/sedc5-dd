@@ -11,7 +11,38 @@ namespace FirstAppG2
     {
         static void Main(string[] args)
         {
-            FirstDataRead();
+            while (true)
+            {
+                FirstDataQuery();
+            }
+        }
+
+        private static void FirstDataQuery()
+        {
+            Console.Write("Enter name fragment: ");
+            string query = Console.ReadLine();
+
+            SqlConnection connection = new SqlConnection("Server=.;Database=BooksDb;Trusted_Connection=True;");
+            connection.Open();
+
+            SqlCommand command = new SqlCommand();
+            command.Connection = connection;
+            command.CommandText = $"select ID, Name, DateOfBirth from Authors where name like '%{query}%'";
+
+            var dr = command.ExecuteReader();
+
+            while (dr.Read())
+            {
+                int authorID = (int)dr["ID"];
+                string authorName = (string)dr["Name"];
+                DateTime? dob = dr.IsDBNull(2) 
+                    ? (DateTime?) null
+                    : (DateTime) dr["DateOfBirth"];
+
+                Console.WriteLine($"{authorID}: {authorName} ({dob})");
+            }
+
+            connection.Close();
         }
 
         private static void FirstDataAccess()
@@ -37,22 +68,22 @@ namespace FirstAppG2
 
             SqlCommand command = new SqlCommand();
             command.Connection = connection;
-            command.CommandText = "select * from Authors";
+            command.CommandText = "select ID, Name from Authors";
 
             var dr = command.ExecuteReader();
 
             while (dr.Read())
             {
-                //int authorID = (int) dr["ID"];
-                //string authorName = (string) dr["Name"];
+                int authorID = (int)dr["ID"];
+                string authorName = (string)dr["Name"];
 
                 //int authorID = dr.GetInt32(0);
                 //string authorName = dr.GetString(1);
 
-                int authorID = dr.GetFieldValue<int>(0);
-                string authorName = dr.GetFieldValue<string>(1);
+                //int authorID = dr.GetFieldValue<int>(0);
+                //string authorName = dr.GetFieldValue<string>(1);
 
-                //Console.WriteLine($"{authorID}: {authorName}");
+                Console.WriteLine($"{authorID}: {authorName}");
             }
 
             connection.Close();
