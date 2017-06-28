@@ -13,10 +13,11 @@ namespace FirstAppG2
         {
             while (true)
             {
-                FirstDataQuery();
+                ThirdDataQuery();
             }
         }
 
+        //VULNERABLE - DONT USE THIS EVER
         private static void FirstDataQuery()
         {
             Console.Write("Enter name fragment: ");
@@ -27,7 +28,8 @@ namespace FirstAppG2
 
             SqlCommand command = new SqlCommand();
             command.Connection = connection;
-            command.CommandText = $"select ID, Name, DateOfBirth from Authors where name like '%{query}%'";
+            //VULNERABLE - DONT USE THIS EVER
+            command.CommandText = "select ID, Name, DateOfBirth from Authors where name like '%" + query + "%'";
 
             var dr = command.ExecuteReader();
 
@@ -35,9 +37,68 @@ namespace FirstAppG2
             {
                 int authorID = (int)dr["ID"];
                 string authorName = (string)dr["Name"];
-                DateTime? dob = dr.IsDBNull(2) 
-                    ? (DateTime?) null
-                    : (DateTime) dr["DateOfBirth"];
+                DateTime? dob = dr.IsDBNull(2)
+                    ? (DateTime?)null
+                    : (DateTime)dr["DateOfBirth"];
+
+                Console.WriteLine($"{authorID}: {authorName} ({dob})");
+            }
+
+            connection.Close();
+        }
+
+        private static void SecondDataQuery()
+        {
+            Console.Write("Enter name fragment: ");
+            string query = Console.ReadLine();
+
+            SqlConnection connection = new SqlConnection("Server=.;Database=BooksDb;Trusted_Connection=True;");
+            connection.Open();
+
+            SqlCommand command = new SqlCommand();
+            command.Connection = connection;
+            command.CommandText = "select ID, Name, DateOfBirth from Authors where name like '%'+@authorName+'%'";
+            command.Parameters.AddWithValue("@authorName", query);
+
+            var dr = command.ExecuteReader();
+
+            while (dr.Read())
+            {
+                int authorID = (int)dr["ID"];
+                string authorName = (string)dr["Name"];
+                DateTime? dob = dr.IsDBNull(2)
+                    ? (DateTime?)null
+                    : (DateTime)dr["DateOfBirth"];
+
+                Console.WriteLine($"{authorID}: {authorName} ({dob})");
+            }
+
+            connection.Close();
+        }
+
+        private static void ThirdDataQuery()
+        {
+            Console.Write("Enter name fragment: ");
+            string query = Console.ReadLine();
+
+            SqlConnection connection = new SqlConnection("Server=.;Database=BooksDb;Trusted_Connection=True;");
+            connection.Open();
+
+            SqlCommand command = new SqlCommand();
+            command.Connection = connection;
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.CommandText = "getAuthors";
+            command.Parameters.AddWithValue("@authorName", query);
+
+            var dr = command.ExecuteReader();
+
+            while (dr.Read())
+            {
+                int authorID = (int)dr["ID"];
+                string authorName = (string)dr["Name"];
+                DateTime? dob = dr.IsDBNull(2)
+                    ? (DateTime?)null
+                    : (DateTime)dr["DateOfBirth"];
 
                 Console.WriteLine($"{authorID}: {authorName} ({dob})");
             }
