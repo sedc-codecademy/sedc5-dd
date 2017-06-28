@@ -29,7 +29,7 @@ namespace FirstAppG2
             SqlCommand command = new SqlCommand();
             command.Connection = connection;
             //VULNERABLE - DONT USE THIS EVER
-            command.CommandText = "select ID, Name, DateOfBirth from Authors where name like '%" + query + "%'";
+            command.CommandText = $"select ID, Name, DateOfBirth from Authors where name like '%{query}%'";
 
             var dr = command.ExecuteReader();
 
