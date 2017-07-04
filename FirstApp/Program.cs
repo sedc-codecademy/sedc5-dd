@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -9,11 +10,58 @@ namespace FirstApp
 {
     class Program
     {
+        private static string connectionString;
+
         static void Main(string[] args)
         {
+            connectionString = ConfigurationManager.ConnectionStrings["BooksDb"].ConnectionString;
+            
             while (true)
             {
-                FirstAdd();
+                SecondAdd();
+            }
+
+        }
+
+        private static void AuthorDispose()
+        {
+            using (Author a = new Author())
+            {
+                Console.WriteLine("In the using");
+            }
+        }
+
+        private static void SecondAdd()
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                {
+                    Console.Write("Enter author name: ");
+                    string authorName = Console.ReadLine();
+
+                    DateTime? dob = null; // new DateTime(2017, 7, 4);
+
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.Connection = connection;
+                        cmd.Transaction = transaction;
+
+                        cmd.CommandText = "insert into Authors (Name, DateOfBirth) values (@authorName, @dateOfBirth)";
+                        cmd.Parameters.AddWithValue("@authorName", authorName);
+                        cmd.Parameters.AddWithValue("@dateOfBirth", dob ?? (object)DBNull.Value);
+
+                        cmd.ExecuteNonQuery();
+
+                        cmd.CommandText = "select @@identity";
+                        var authorId = cmd.ExecuteScalar();
+                        Console.WriteLine(authorId);
+                    }
+
+                    transaction.Commit();
+                }
             }
         }
 
@@ -22,14 +70,19 @@ namespace FirstApp
             SqlConnection connection = new SqlConnection("Server=.;Database=BooksDb;Trusted_Connection=True;");
             connection.Open();
 
+            SqlTransaction transaction = connection.BeginTransaction();
+
             Console.Write("Enter author name: ");
             string authorName = Console.ReadLine();
 
             DateTime? dob = null; // new DateTime(2017, 7, 4);
 
             SqlCommand cmd = new SqlCommand();
+
             cmd.Connection = connection;
-            cmd.CommandText = "insert into Authors (Name, DateOfBirth) values (@authorName, @dateOfBirth)";
+            cmd.Transaction = transaction;
+
+            cmd.CommandText = "insert into Autors (Name, DateOfBirth) values (@authorName, @dateOfBirth)";
             cmd.Parameters.AddWithValue("@authorName", authorName);
             cmd.Parameters.AddWithValue("@dateOfBirth", dob ?? (object)DBNull.Value);
 
@@ -40,7 +93,10 @@ namespace FirstApp
 
             Console.WriteLine(authorId);
 
+            transaction.Commit();
+
             connection.Close();
+
         }
 
         private static void FirstConnection()
@@ -80,9 +136,9 @@ namespace FirstApp
 
                 int authorId = (int)dr["ID"];
                 string name = (string)dr["Name"];
-                DateTime? dob = dr.IsDBNull(2) 
-                    ? (DateTime?)null 
-                    : (DateTime) dr["DateOfBirth"];
+                DateTime? dob = dr.IsDBNull(2)
+                    ? (DateTime?)null
+                    : (DateTime)dr["DateOfBirth"];
 
                 Console.WriteLine($"{authorId} - {name} - {dob}");
             }
@@ -199,3 +255,4 @@ namespace FirstApp
 
     }
 }
+
