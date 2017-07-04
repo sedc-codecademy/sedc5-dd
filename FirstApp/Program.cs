@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,12 +17,44 @@ namespace FirstApp
         static void Main(string[] args)
         {
             connectionString = ConfigurationManager.ConnectionStrings["BooksDb"].ConnectionString;
-            //LoadAuthors();
-            while (true)
+
+            SpinAuthorsCode();
+            SpinAuthorsDatabase();
+
+            //while (true)
+            //{
+            //    LoadAuthorsByFilter();
+            //    PrintAuthors();
+            //}
+        }
+
+        private static void SpinAuthorsCode()
+        {
+            Stopwatch s = Stopwatch.StartNew();
+            var loader = new AuthorsLoader(connectionString);
+            var authors = loader.LoadAuthors();
+
+            for (int i = 0; i < 100; i++)
             {
-                LoadAuthorsByFilter();
-                PrintAuthors();
+                var result = authors.Where(a => a.Name.Contains("ew")).ToList();
             }
+
+            s.Stop();
+            Console.WriteLine($"Code: {s.ElapsedMilliseconds}");
+        }
+
+        private static void SpinAuthorsDatabase()
+        {
+            Stopwatch s = Stopwatch.StartNew();
+            var loader = new AuthorsLoader(connectionString);
+
+            for (int i = 0; i < 100; i++)
+            {
+                var result = loader.LoadAuthorsByFilter("ew");
+            }
+
+            s.Stop();
+            Console.WriteLine($"Data: {s.ElapsedMilliseconds}");
         }
 
         private static void LoadAuthorsByFilter()
