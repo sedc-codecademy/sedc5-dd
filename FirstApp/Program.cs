@@ -24,79 +24,19 @@ namespace FirstApp
             }
         }
 
+        private static void LoadAuthorsByFilter()
+        {
+            Console.Write("Enter name fragment: ");
+            var fragment = Console.ReadLine();
+            var loader = new AuthorsLoader(connectionString);
+            authors = loader.LoadAuthorsByFilter(fragment);
+        }
+
         private static void PrintAuthors()
         {
             foreach (var author in authors)
             {
                 Console.WriteLine(author);
-            }
-        }
-
-        private static void LoadAuthors()
-        {
-            authors = new List<Author>();
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    cmd.Connection = connection;
-                    cmd.CommandText = "select ID, Name, DateOfBirth, DateOfDeath from Authors";
-
-                    using (SqlDataReader dr = cmd.ExecuteReader())
-                    {
-                        while (dr.Read())
-                        {
-                            authors.Add(GetAuthorFromDataReader(dr));
-                        }
-                    }
-                }
-            }
-        }
-
-        private static Author GetAuthorFromDataReader(SqlDataReader dr)
-        {
-            int authorId = (int)dr["ID"];
-            string name = (string)dr["Name"];
-            DateTime? dob = dr.IsDBNull(2) ? (DateTime?)null : (DateTime)dr["DateOfBirth"];
-            DateTime? dod = dr.IsDBNull(3) ? (DateTime?)null : (DateTime)dr["DateOfDeath"];
-
-            var author = new Author
-            {
-                Id = authorId,
-                Name = name,
-                BirthDate = dob,
-                DeathDate = dod
-            };
-            return author;
-        }
-
-        private static void LoadAuthorsByFilter()
-        {
-            authors = new List<Author>();
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-
-                Console.Write("Enter author name: ");
-                string query = Console.ReadLine();
-
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    cmd.Connection = connection;
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.CommandText = "getAuthors";
-                    cmd.Parameters.AddWithValue("@authorName", query);
-
-                    using (SqlDataReader dr = cmd.ExecuteReader())
-                    {
-                        while (dr.Read())
-                        {
-                            authors.Add(GetAuthorFromDataReader(dr));
-                        }
-                    }
-                }
             }
         }
 
