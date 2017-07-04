@@ -13,8 +13,34 @@ namespace FirstApp
         {
             while (true)
             {
-                ThirdFiltering();
+                FirstAdd();
             }
+        }
+
+        private static void FirstAdd()
+        {
+            SqlConnection connection = new SqlConnection("Server=.;Database=BooksDb;Trusted_Connection=True;");
+            connection.Open();
+
+            Console.Write("Enter author name: ");
+            string authorName = Console.ReadLine();
+
+            DateTime? dob = null; // new DateTime(2017, 7, 4);
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = connection;
+            cmd.CommandText = "insert into Authors (Name, DateOfBirth) values (@authorName, @dateOfBirth)";
+            cmd.Parameters.AddWithValue("@authorName", authorName);
+            cmd.Parameters.AddWithValue("@dateOfBirth", dob ?? (object)DBNull.Value);
+
+            cmd.ExecuteNonQuery();
+
+            cmd.CommandText = "select @@identity";
+            var authorId = cmd.ExecuteScalar();
+
+            Console.WriteLine(authorId);
+
+            connection.Close();
         }
 
         private static void FirstConnection()
