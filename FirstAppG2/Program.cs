@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -9,14 +10,14 @@ namespace FirstAppG2
 {
     class Program
     {
+        private static string connectionString;
+
         static void Main(string[] args)
         {
-            while (true)
-            {
-                var results = GetAuthorsByName();
+            connectionString = ConfigurationManager.ConnectionStrings["BooksDb"].ConnectionString;
 
-                PrintAuthors(results);
-            }
+            var results = GetAllAuthors();
+            PrintAuthors(results);
         }
 
         private static void PrintAuthors(IEnumerable<Author> authors)
@@ -38,7 +39,7 @@ namespace FirstAppG2
 
         private static void SecondDataEntry()
         {
-            using (SqlConnection connection = new SqlConnection("Server=.;Database=BooksDb;Trusted_Connection=True;"))
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 Console.Write("Enter author name: ");
                 string authorName = Console.ReadLine();
@@ -80,7 +81,7 @@ namespace FirstAppG2
 
             DateTime? dob = new DateTime(2001, 1, 17);
 
-            SqlConnection connection = new SqlConnection("Server=.;Database=BooksDb;Trusted_Connection=True;");
+            SqlConnection connection = new SqlConnection(connectionString);
             connection.Open();
 
             SqlTransaction transaction = connection.BeginTransaction();
@@ -110,7 +111,7 @@ namespace FirstAppG2
             Console.Write("Enter name fragment: ");
             string query = Console.ReadLine();
 
-            SqlConnection connection = new SqlConnection("Server=.;Database=BooksDb;Trusted_Connection=True;");
+            SqlConnection connection = new SqlConnection(connectionString);
             connection.Open();
 
             SqlCommand command = new SqlCommand();
@@ -139,7 +140,7 @@ namespace FirstAppG2
             Console.Write("Enter name fragment: ");
             string query = Console.ReadLine();
 
-            SqlConnection connection = new SqlConnection("Server=.;Database=BooksDb;Trusted_Connection=True;");
+            SqlConnection connection = new SqlConnection(connectionString);
             connection.Open();
 
             SqlCommand command = new SqlCommand();
@@ -168,7 +169,7 @@ namespace FirstAppG2
             Console.Write("Enter name fragment: ");
             string query = Console.ReadLine();
 
-            SqlConnection connection = new SqlConnection("Server=.;Database=BooksDb;Trusted_Connection=True;");
+            SqlConnection connection = new SqlConnection(connectionString);
             connection.Open();
 
             SqlCommand command = new SqlCommand();
@@ -195,7 +196,7 @@ namespace FirstAppG2
 
         private static void FirstDataAccess()
         {
-            SqlConnection connection = new SqlConnection("Server=.;Database=BooksDb;Trusted_Connection=True;");
+            SqlConnection connection = new SqlConnection(connectionString);
             connection.Open();
 
             SqlCommand command = new SqlCommand();
@@ -211,7 +212,7 @@ namespace FirstAppG2
 
         private static void FirstDataRead()
         {
-            SqlConnection connection = new SqlConnection("Server=.;Database=BooksDb;Trusted_Connection=True;");
+            SqlConnection connection = new SqlConnection(connectionString);
             connection.Open();
 
             SqlCommand command = new SqlCommand();
@@ -244,7 +245,7 @@ namespace FirstAppG2
 
             List<Author> result = new List<Author>();
 
-            using (SqlConnection connection = new SqlConnection("Server=.;Database=BooksDb;Trusted_Connection=True;"))
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
@@ -259,20 +260,7 @@ namespace FirstAppG2
                     {
                         while (dr.Read())
                         {
-                            int authorID = (int)dr["ID"];
-                            string authorName = (string)dr["Name"];
-                            DateTime? dob = dr.IsDBNull(2) ? (DateTime?)null : (DateTime)dr["DateOfBirth"];
-                            DateTime? dod = dr.IsDBNull(3) ? (DateTime?)null : (DateTime)dr["DateOfDeath"];
-
-                            Author author = new Author
-                            {
-                                Id = authorID,
-                                Name = authorName,
-                                BirthDay = dob,
-                                DeathDay = dod
-                            };
-
-                            result.Add(author);
+                            result.Add(LoadAuthorForReader(dr));
                         }
                     }
 
@@ -284,7 +272,48 @@ namespace FirstAppG2
 
         private static List<Author> GetAllAuthors()
         {
-            throw new NotImplementedException();
+            List<Author> result = new List<Author>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                using (SqlCommand command = new SqlCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandText = "select ID, Name, DateOfBirth, DateOfDeath from Authors";
+
+                    using (var dr = command.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            Author author = LoadAuthorForReader(dr);
+
+                            result.Add(author);
+                        }
+                    }
+
+                }
+
+            }
+            return result;
+        }
+
+        private static Author LoadAuthorForReader(SqlDataReader dr)
+        {
+            int authorID = (int)dr["ID"];
+            string authorName = (string)dr["Name"];
+            DateTime? dob = dr.IsDBNull(2) ? (DateTime?)null : (DateTime)dr["DateOfBirth"];
+            DateTime? dod = dr.IsDBNull(3) ? (DateTime?)null : (DateTime)dr["DateOfDeath"];
+
+            Author author = new Author
+            {
+                Id = authorID,
+                Name = authorName,
+                BirthDay = dob,
+                DeathDay = dod
+            };
+            return author;
         }
     }
 }
