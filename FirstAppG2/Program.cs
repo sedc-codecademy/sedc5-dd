@@ -11,11 +11,60 @@ namespace FirstAppG2
     {
         static void Main(string[] args)
         {
+            AuthorDispose();
+            return;
+
             while (true)
             {
-                FirstDataEntry();
+                SecondDataEntry();
             }
         }
+
+        private static void AuthorDispose()
+        {
+            using (Author a = new Author())
+            {
+                // do something
+                Console.WriteLine("Doing something with author");
+            }
+        }
+
+        private static void SecondDataEntry()
+        {
+            using (SqlConnection connection = new SqlConnection("Server=.;Database=BooksDb;Trusted_Connection=True;"))
+            {
+                Console.Write("Enter author name: ");
+                string authorName = Console.ReadLine();
+
+                if (string.IsNullOrEmpty(authorName))
+                {
+                    throw new ArgumentException("Empty author name");
+                }
+
+                DateTime? dob = new DateTime(2001, 1, 17);
+
+                connection.Open();
+
+                SqlTransaction transaction = connection.BeginTransaction();
+
+                SqlCommand command = new SqlCommand();
+                command.Connection = connection;
+                command.Transaction = transaction;
+                command.CommandText = "insert into Authors (Name, DateOfBirth) values (@authorName, @dob)";
+                command.Parameters.AddWithValue("@authorName", authorName);
+                command.Parameters.AddWithValue("@dob", dob ?? (object)DBNull.Value);
+
+                var dr = command.ExecuteNonQuery();
+
+                command.CommandText = "select IDENT_CURRENT('Authors')";
+                var authorId = command.ExecuteScalar();
+
+                Console.WriteLine(authorId);
+
+                transaction.Commit();
+            }
+        }
+
 
         private static void FirstDataEntry()
         {
