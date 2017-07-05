@@ -6,11 +6,16 @@ using System.Threading.Tasks;
 
 namespace FirstAppG2
 {
-    class Author : IDisposable
+    class Author
     {
-        public void Dispose()
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public DateTime? BirthDay { get; set; }
+        public DateTime? DeathDay { get; set; }
+
+        public override string ToString()
         {
-            Console.WriteLine("I'm being disposed");
+            return $"#{Id}: {Name} ({BirthDay} - {DeathDay})";
         }
     }
 }

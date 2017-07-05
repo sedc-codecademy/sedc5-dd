@@ -11,23 +11,30 @@ namespace FirstAppG2
     {
         static void Main(string[] args)
         {
-            AuthorDispose();
-            return;
-
             while (true)
             {
-                SecondDataEntry();
+                var results = FirstDataMapping();
+
+                PrintAuthors(results);
             }
         }
 
-        private static void AuthorDispose()
+        private static void PrintAuthors(IEnumerable<Author> authors)
         {
-            using (Author a = new Author())
+            foreach (var author in authors)
             {
-                // do something
-                Console.WriteLine("Doing something with author");
+                Console.WriteLine(author);
             }
         }
+
+        //private static void AuthorDispose()
+        //{
+        //    using (Author a = new Author())
+        //    {
+        //        // do something
+        //        Console.WriteLine("Doing something with author");
+        //    }
+        //}
 
         private static void SecondDataEntry()
         {
@@ -228,6 +235,51 @@ namespace FirstAppG2
             }
 
             connection.Close();
+        }
+
+        private static List<Author> FirstDataMapping()
+        {
+            Console.Write("Enter name fragment: ");
+            string query = Console.ReadLine();
+
+            List<Author> result = new List<Author>();
+
+            using (SqlConnection connection = new SqlConnection("Server=.;Database=BooksDb;Trusted_Connection=True;"))
+            {
+                connection.Open();
+
+                using (SqlCommand command = new SqlCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.CommandText = "getAuthors";
+                    command.Parameters.AddWithValue("@authorName", query);
+
+                    using (var dr = command.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            int authorID = (int)dr["ID"];
+                            string authorName = (string)dr["Name"];
+                            DateTime? dob = dr.IsDBNull(2) ? (DateTime?)null : (DateTime)dr["DateOfBirth"];
+                            DateTime? dod = dr.IsDBNull(3) ? (DateTime?)null : (DateTime)dr["DateOfDeath"];
+
+                            Author author = new Author
+                            {
+                                Id = authorID,
+                                Name = authorName,
+                                BirthDay = dob,
+                                DeathDay = dod
+                            };
+
+                            result.Add(author);
+                        }
+                    }
+
+                }
+
+            }
+            return result;
         }
     }
 }
