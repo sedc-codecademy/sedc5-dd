@@ -22,7 +22,7 @@ namespace FirstAppG2
             Console.Write("Enter author name: ");
             string authorName = Console.ReadLine();
 
-            DateTime? dob = new DateTime(1979, 1, 27);
+            DateTime? dob = new DateTime(2001, 1, 17);
 
             SqlConnection connection = new SqlConnection("Server=.;Database=BooksDb;Trusted_Connection=True;");
             connection.Open();
@@ -34,7 +34,7 @@ namespace FirstAppG2
             command.Transaction = transaction;
             command.CommandText = "insert into Authors (Name, DateOfBirth) values (@authorName, @dob)";
             command.Parameters.AddWithValue("@authorName", authorName);
-            command.Parameters.AddWithValue("@dob", dob);
+            command.Parameters.AddWithValue("@dob", dob ?? (object)DBNull.Value);
 
             var dr = command.ExecuteNonQuery();
 
