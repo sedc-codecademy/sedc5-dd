@@ -13,7 +13,7 @@ namespace FirstAppG2
         {
             while (true)
             {
-                var results = FirstDataMapping();
+                var results = GetAuthorsByName();
 
                 PrintAuthors(results);
             }
@@ -237,7 +237,7 @@ namespace FirstAppG2
             connection.Close();
         }
 
-        private static List<Author> FirstDataMapping()
+        private static List<Author> GetAuthorsByName()
         {
             Console.Write("Enter name fragment: ");
             string query = Console.ReadLine();
@@ -280,6 +280,11 @@ namespace FirstAppG2
 
             }
             return result;
+        }
+
+        private static List<Author> GetAllAuthors()
+        {
+            throw new NotImplementedException();
         }
     }
 }
