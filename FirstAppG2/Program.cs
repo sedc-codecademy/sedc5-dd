@@ -45,26 +45,26 @@ namespace FirstAppG2
 
                 connection.Open();
 
-                SqlTransaction transaction = connection.BeginTransaction();
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                {
+                    using (SqlCommand command = new SqlCommand())
+                    {
+                        command.Connection = connection;
+                        command.Transaction = transaction;
+                        command.CommandText = "insert into Authors (Name, DateOfBirth) values (@authorName, @dob)";
+                        command.Parameters.AddWithValue("@authorName", authorName);
+                        command.Parameters.AddWithValue("@dob", dob ?? (object)DBNull.Value);
 
-                SqlCommand command = new SqlCommand();
-                command.Connection = connection;
-                command.Transaction = transaction;
-                command.CommandText = "insert into Authors (Name, DateOfBirth) values (@authorName, @dob)";
-                command.Parameters.AddWithValue("@authorName", authorName);
-                command.Parameters.AddWithValue("@dob", dob ?? (object)DBNull.Value);
+                        command.ExecuteNonQuery();
+                        command.CommandText = "select IDENT_CURRENT('Authors')";
+                        var authorId = command.ExecuteScalar();
+                        Console.WriteLine(authorId);
+                    }
 
-                var dr = command.ExecuteNonQuery();
-
-                command.CommandText = "select IDENT_CURRENT('Authors')";
-                var authorId = command.ExecuteScalar();
-
-                Console.WriteLine(authorId);
-
-                transaction.Commit();
+                    transaction.Commit();
+                }
             }
         }
-
 
         private static void FirstDataEntry()
         {
