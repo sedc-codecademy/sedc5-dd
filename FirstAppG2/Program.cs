@@ -13,8 +13,39 @@ namespace FirstAppG2
         {
             while (true)
             {
-                ThirdDataQuery();
+                FirstDataEntry();
             }
+        }
+
+        private static void FirstDataEntry()
+        {
+            Console.Write("Enter author name: ");
+            string authorName = Console.ReadLine();
+
+            DateTime? dob = new DateTime(1979, 1, 27);
+
+            SqlConnection connection = new SqlConnection("Server=.;Database=BooksDb;Trusted_Connection=True;");
+            connection.Open();
+
+            SqlTransaction transaction = connection.BeginTransaction();
+
+            SqlCommand command = new SqlCommand();
+            command.Connection = connection;
+            command.Transaction = transaction;
+            command.CommandText = "insert into Authors (Name, DateOfBirth) values (@authorName, @dob)";
+            command.Parameters.AddWithValue("@authorName", authorName);
+            command.Parameters.AddWithValue("@dob", dob);
+
+            var dr = command.ExecuteNonQuery();
+
+            command.CommandText = "select IDENT_CURRENT('Authors')";
+            var authorId = command.ExecuteScalar();
+
+            Console.WriteLine(authorId);
+
+            transaction.Commit();
+
+            connection.Close();
         }
 
         //VULNERABLE - DONT USE THIS EVER
