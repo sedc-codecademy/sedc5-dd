@@ -6,23 +6,23 @@ using System.Linq;
 
 namespace DataAccessG1
 {
-    public class AuthorRepository : IAuthorRepository
+    public class NovelRepository : INovelRepository
     {
         private string connectionString;
 
-        public AuthorRepository(string connectionString)
+        public NovelRepository(string connectionString)
         {
             this.connectionString = connectionString;
         }
 
-        public Author CreateAuthor(string name, DateTime? dateOfBirth = null, DateTime? dateOfDeath = null)
+        public Novel CreateNovel(string title, int authorId)
         {
-            if (GetAuthorsByName(name).Any(a => a.Name == name))
+            if (GetNovelsByAuthor(authorId).Any(a => a.Title == title))
             {
-                throw new ArgumentException($"Author with name {name} already exists");
+                throw new ArgumentException($"Novel with title {title} already exists");
             }
 
-            int authorId = -1;
+            int novelId = -1;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -34,24 +34,23 @@ namespace DataAccessG1
                         cmd.Connection = connection;
                         cmd.Transaction = transaction;
 
-                        cmd.CommandText = "insert into Authors (Name, DateOfBirth, DateOfDeath) values (@authorName, @dateOfBirth, @dateOfDeath)";
-                        cmd.Parameters.AddWithValue("@authorName", name);
-                        cmd.Parameters.AddWithValue("@dateOfBirth", dateOfBirth ?? (object)DBNull.Value);
-                        cmd.Parameters.AddWithValue("@dateOfDeath", dateOfDeath ?? (object)DBNull.Value);
+                        cmd.CommandText = "insert into Novels (Title, AuthorID) values (@novelTitle, @authorId)";
+                        cmd.Parameters.AddWithValue("@novelTitle", title);
+                        cmd.Parameters.AddWithValue("@authorId", authorId);
 
                         cmd.ExecuteNonQuery();
 
                         cmd.CommandText = "select @@identity";
-                        authorId = Convert.ToInt32(cmd.ExecuteScalar());
+                        novelId = Convert.ToInt32(cmd.ExecuteScalar());
                     }
 
                     transaction.Commit();
                 }
             }
-            return GetAuthorById(authorId);
+            return GetNovelById(novelId);
         }
 
-        public bool DeleteAuthor(Author author)
+        public bool DeleteNovel(Novel Novel)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -61,8 +60,8 @@ namespace DataAccessG1
                 {
                     cmd.Connection = connection;
 
-                    cmd.CommandText = "delete from Authors where ID=@id";
-                    cmd.Parameters.AddWithValue("@id", author.Id);
+                    cmd.CommandText = "delete from Novels where ID=@id";
+                    cmd.Parameters.AddWithValue("@id", Novel.ID);
 
                     int rowCount = cmd.ExecuteNonQuery();
                     return rowCount == 1;
@@ -70,9 +69,9 @@ namespace DataAccessG1
             }
         }
 
-        public IEnumerable<Author> GetAllAuthors()
+        public IEnumerable<Novel> GetAllNovels()
         {
-            var authors = new List<Author>();
+            var novels = new List<Novel>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -80,22 +79,22 @@ namespace DataAccessG1
                 using (SqlCommand cmd = new SqlCommand())
                 {
                     cmd.Connection = connection;
-                    cmd.CommandText = "select ID, Name, DateOfBirth, DateOfDeath from Authors";
+                    cmd.CommandText = "select ID, Title, AuthorID from Novels";
 
                     using (SqlDataReader dr = cmd.ExecuteReader())
                     {
                         while (dr.Read())
                         {
-                            authors.Add(GetAuthorFromDataReader(dr));
+                            novels.Add(GetNovelFromDataReader(dr));
                         }
                     }
                 }
             }
 
-            return authors;
+            return novels;
         }
 
-        public Author GetAuthorById(int id)
+        public Novel GetNovelById(int id)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -104,25 +103,51 @@ namespace DataAccessG1
                 using (SqlCommand cmd = new SqlCommand())
                 {
                     cmd.Connection = connection;
-                    cmd.CommandText = "select ID, Name, DateOfBirth, DateOfDeath from Authors where ID=@id";
+                    cmd.CommandText = "select ID, Title, AuthorID from Novels where ID=@id";
                     cmd.Parameters.AddWithValue("@id", id);
 
                     using (SqlDataReader dr = cmd.ExecuteReader())
                     {
                         if (dr.Read())
                         {
-                            return GetAuthorFromDataReader(dr);
+                            return GetNovelFromDataReader(dr);
                         }
-                        throw new InvalidOperationException($"Author with ID {id} not found");
+                        throw new InvalidOperationException($"Novel with ID {id} not found");
                     }
                 }
             }
 
         }
 
-        public IEnumerable<Author> GetAuthorsByName(string nameFragment)
+        public IEnumerable<Novel> GetNovelsByAuthor(int authorId)
         {
-            var authors = new List<Author>();
+            var novels = new List<Novel>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    cmd.Connection = connection;
+                    cmd.CommandText = "select ID, Title, AuthorID from Novels where authorId = @authorId";
+                    cmd.Parameters.AddWithValue("@authorId", authorId);
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            novels.Add(GetNovelFromDataReader(dr));
+                        }
+                    }
+                }
+            }
+
+            return novels;
+        }
+
+        public IEnumerable<Novel> GetNovelsByName(string title)
+        {
+            var novels = new List<Novel>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -131,58 +156,39 @@ namespace DataAccessG1
                 {
                     cmd.Connection = connection;
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.CommandText = "getAuthors";
-                    cmd.Parameters.AddWithValue("@authorName", nameFragment);
+                    cmd.CommandText = "select ID, Title, AuthorID from Novels where Title like '%'+@title+'%'";
+                    cmd.Parameters.AddWithValue("@title", title);
 
                     using (SqlDataReader dr = cmd.ExecuteReader())
                     {
                         while (dr.Read())
                         {
-                            authors.Add(GetAuthorFromDataReader(dr));
+                            novels.Add(GetNovelFromDataReader(dr));
                         }
                     }
                 }
             }
-            return authors;
+            return novels;
         }
 
-        public Author UpdateAuthor(Author author)
+        public Novel UpdateNovel(Novel Novel)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    cmd.Connection = connection;
-
-                    cmd.CommandText = "update Authors set Name = @name, DateOfBirth = @dob, DateOfDeath = @dod where ID=@id";
-                    cmd.Parameters.AddWithValue("@id", author.Id);
-                    cmd.Parameters.AddWithValue("@name", author.Name);
-                    cmd.Parameters.AddWithValue("@dob", author.BirthDate ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@dod", author.DeathDate ?? (object)DBNull.Value);
-
-                    cmd.ExecuteNonQuery();
-                }
-            }
-            return GetAuthorById(author.Id);
+            throw new NotImplementedException();
         }
 
-        private Author GetAuthorFromDataReader(SqlDataReader dr)
+        private Novel GetNovelFromDataReader(SqlDataReader dr)
         {
-            int authorId = (int)dr["ID"];
-            string name = (string)dr["Name"];
-            DateTime? dob = dr.IsDBNull(2) ? (DateTime?)null : (DateTime)dr["DateOfBirth"];
-            DateTime? dod = dr.IsDBNull(3) ? (DateTime?)null : (DateTime)dr["DateOfDeath"];
+            int novelId = (int)dr["ID"];
+            string title = (string)dr["Title"];
+            int authorId = (int)dr["AuthorID"];
 
-            var author = new Author
+            var novel = new Novel
             {
-                Id = authorId,
-                Name = name,
-                BirthDate = dob,
-                DeathDate = dod
+                ID = novelId,
+                Title = title,
+                AuthorID = authorId
             };
-            return author;
+            return novel;
         }
     }
 }
