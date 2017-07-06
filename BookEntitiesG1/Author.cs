@@ -13,17 +13,11 @@ namespace BookEntitiesG1
         public DateTime? BirthDate { get; set; }
         public DateTime? DeathDate { get; set; }
 
+        public IEnumerable<Novel> Novels { get; set; }
+
         public override string ToString()
         {
-            if (BirthDate == null)
-            {
-                return $"#{Id}: {Name}";
-            }
-            else
-            {
-                return $"#{Id}: {Name} ({BirthDate} - {DeathDate})";
-            }
-
+            return $"{Name} ({Novels.Count()} novels)";
         }
     }
 }

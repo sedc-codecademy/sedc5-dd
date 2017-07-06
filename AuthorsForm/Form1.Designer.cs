@@ -30,6 +30,7 @@
         {
             this.lstAuthors = new System.Windows.Forms.ListBox();
             this.btnLoad = new System.Windows.Forms.Button();
+            this.lstNovels = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
             // lstAuthors
@@ -39,6 +40,7 @@
             this.lstAuthors.Name = "lstAuthors";
             this.lstAuthors.Size = new System.Drawing.Size(322, 563);
             this.lstAuthors.TabIndex = 0;
+            this.lstAuthors.SelectedIndexChanged += new System.EventHandler(this.lstAuthors_SelectedIndexChanged);
             // 
             // btnLoad
             // 
@@ -50,11 +52,20 @@
             this.btnLoad.UseVisualStyleBackColor = true;
             this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
             // 
+            // lstNovels
+            // 
+            this.lstNovels.FormattingEnabled = true;
+            this.lstNovels.Location = new System.Drawing.Point(374, 40);
+            this.lstNovels.Name = "lstNovels";
+            this.lstNovels.Size = new System.Drawing.Size(270, 563);
+            this.lstNovels.TabIndex = 2;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1063, 617);
+            this.Controls.Add(this.lstNovels);
             this.Controls.Add(this.btnLoad);
             this.Controls.Add(this.lstAuthors);
             this.Name = "frmMain";
@@ -68,6 +79,7 @@
 
         private System.Windows.Forms.ListBox lstAuthors;
         private System.Windows.Forms.Button btnLoad;
+        private System.Windows.Forms.ListBox lstNovels;
     }
 }
 

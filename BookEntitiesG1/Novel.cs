@@ -11,5 +11,12 @@ namespace BookEntitiesG1
         public int ID { get; set; }
         public string Title { get; set; }
         public int AuthorID { get; set; }
+
+        public Author Author { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Title} by {Author.Name}";
+        }
     }
 }

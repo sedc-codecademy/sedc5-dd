@@ -1,4 +1,5 @@
-﻿using BusinessLogic;
+﻿using BookEntitiesG1;
+using BusinessLogic;
 using DataAccessG1;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,9 @@ namespace AuthorsForm
             InitializeComponent();
             var connectionString = ConfigurationManager.ConnectionStrings["BooksDb"].ConnectionString;
             var authorRepo = new AuthorRepository(connectionString);
-            authorProvider = new AuthorProvider(authorRepo);
+            var novelRepo = new NovelRepository(connectionString);
+
+            authorProvider = new AuthorProvider(authorRepo, novelRepo);
         }
 
         private void btnLoad_Click(object sender, EventArgs e)
@@ -32,6 +35,17 @@ namespace AuthorsForm
 
         private void frmMain_Load(object sender, EventArgs e)
         {
+
+        }
+
+        private void lstAuthors_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lstAuthors.SelectedIndex == -1)
+                return;
+            var author = (Author)lstAuthors.SelectedItem;
+            author = authorProvider.GetNovels(author);
+
+            lstNovels.DataSource = author.Novels;
 
         }
     }

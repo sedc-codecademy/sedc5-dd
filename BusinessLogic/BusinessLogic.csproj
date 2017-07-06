@@ -42,6 +42,8 @@
   <ItemGroup>
     <Compile Include="AuthorProvider.cs" />
     <Compile Include="IAuthorProvider.cs" />
+    <Compile Include="INovelProvider.cs" />
+    <Compile Include="NovelProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

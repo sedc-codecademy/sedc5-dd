@@ -10,6 +10,7 @@ namespace BusinessLogic
     public interface IAuthorProvider
     {
         IEnumerable<Author> GetAuthors(string nameFragment = "");
+        Author GetNovels(Author author);
         Author RecordDeath(Author author, DateTime dateOfDeath);
         bool DeleteAuthor(Author author);
     }

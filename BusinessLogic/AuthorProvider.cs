@@ -10,34 +10,58 @@ namespace BusinessLogic
 {
     public class AuthorProvider : IAuthorProvider
     {
-        private IAuthorRepository repo;
+        private IAuthorRepository authorRepo;
+        private INovelRepository novelRepo;
 
-        public AuthorProvider(IAuthorRepository repo)
+        public AuthorProvider(IAuthorRepository authorRepo, INovelRepository novelRepo)
         {
-            this.repo = repo;
+            this.authorRepo = authorRepo;
+            this.novelRepo = novelRepo;
         }
 
         public bool DeleteAuthor(Author author)
         {
-            return repo.DeleteAuthor(author);
+            return authorRepo.DeleteAuthor(author);
         }
 
         public IEnumerable<Author> GetAuthors(string nameFragment = "")
         {
+            IEnumerable<Author> authors;
             if (string.IsNullOrEmpty(nameFragment))
             {
-                return repo.GetAllAuthors();
+                authors = authorRepo.GetAllAuthors();
             }
             else
             {
-                return repo.GetAuthorsByName(nameFragment);
+                authors = authorRepo.GetAuthorsByName(nameFragment);
             }
+
+            foreach (var author in authors)
+            {
+                author.Novels = novelRepo.GetNovelsByAuthor(author.Id);
+                foreach (var novel in author.Novels)
+                {
+                    novel.Author = author;
+                }
+            }
+            return authors;
+        }
+
+        public Author GetNovels(Author author)
+        {
+            author.Novels = novelRepo.GetNovelsByAuthor(author.Id);
+            foreach (var novel in author.Novels)
+            {
+                novel.Author = author;
+            }
+            return author;
+            
         }
 
         public Author RecordDeath(Author author, DateTime dateOfDeath)
         {
             author.DeathDate = dateOfDeath;
-            return repo.UpdateAuthor(author);
+            return authorRepo.UpdateAuthor(author);
         }
     }
 }
