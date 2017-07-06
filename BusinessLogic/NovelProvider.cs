@@ -18,5 +18,10 @@ namespace BusinessLogic
         {
             throw new NotImplementedException();
         }
+
+        public Novel UpdateTitle(Novel novel, string newTitle)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

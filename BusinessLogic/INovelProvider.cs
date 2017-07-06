@@ -11,5 +11,6 @@ namespace BusinessLogic
     {
         bool DeleteNovel(Novel novel);
         IEnumerable<Novel> GetNovelsForAuthor(Author author);
+        Novel UpdateTitle(Novel novel, string newTitle);
     }
 }
