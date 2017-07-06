@@ -18,14 +18,14 @@ namespace FirstApp
         {
             connectionString = ConfigurationManager.ConnectionStrings["BooksDb"].ConnectionString;
 
-            SpinAuthorsCode();
-            SpinAuthorsDatabase();
+            //SpinAuthorsCode();
+            //SpinAuthorsDatabase();
 
-            //while (true)
-            //{
-            //    LoadAuthorsByFilter();
-            //    PrintAuthors();
-            //}
+            while (true)
+            {
+                LoadAuthorsByFilter();
+                PrintAuthors();
+            }
         }
 
         private static void SpinAuthorsCode()
