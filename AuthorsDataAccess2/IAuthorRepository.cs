@@ -6,7 +6,7 @@ namespace AuthorsDataAccess2
 {
     public interface IAuthorRepository
     {
-        Author AddAuthor(string name, DateTime? dateOfBirth, DateTime? dateOfDeath);
+        Author AddAuthor(string name, DateTime? dateOfBirth = null, DateTime? dateOfDeath = null);
         Author UpdateAuthor(Author author);
         bool DeleteAuthor(int authorId);
 

@@ -16,9 +16,53 @@ namespace AuthorsConsole2
         static void Main(string[] args)
         {
             connectionString = ConfigurationManager.ConnectionStrings["BooksDb"].ConnectionString;
-            var repo = new AuthorRepository(connectionString);
+            IAuthorRepository repo = new AuthorRepository(connectionString);
 
+            Console.WriteLine(" === Get Authors by name ===");
             PrintAuthors(repo.GetAuthorsByName("art"));
+
+            Console.WriteLine(" === Get Authors by id (extant) ===");
+            var grrm = repo.GetAuthorById(198);
+            Console.WriteLine(grrm);
+
+            Console.WriteLine(" === Get Authors by id (invalid) ===");
+            var authorNull = repo.GetAuthorById(-1);
+            Console.WriteLine(authorNull == null ? "Null returned" : "ERROR: not null");
+
+            Console.WriteLine(" === Create author ===");
+            var testAuthor = repo.AddAuthor("Test McTesty");
+            Console.WriteLine(testAuthor);
+
+            Console.WriteLine(" === Create author (should throw) ===");
+            try
+            {
+                repo.AddAuthor("Test McTesty");
+                Console.WriteLine("ERROR: Inserted double");
+            }
+            catch (ArgumentException aex)
+            {
+                Console.WriteLine(aex.Message);
+            }
+
+            Console.WriteLine(" === Delete author ===");
+            if (repo.DeleteAuthor(testAuthor.Id))
+            {
+                Console.WriteLine("Deleted test author");
+            }
+            else
+            {
+                Console.WriteLine("ERROR: Unable to delete test author");
+            }
+
+            Console.WriteLine(" === Delete author (non-existant)===");
+            if (repo.DeleteAuthor(testAuthor.Id))
+            {
+                Console.WriteLine("ERROR: Delete test author twice");
+            }
+            else
+            {
+                Console.WriteLine("Unable to delete nonexistant author");
+            }
 
         }
 
