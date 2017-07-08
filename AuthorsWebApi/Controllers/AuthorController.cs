@@ -30,5 +30,10 @@ namespace AuthorsWebApi.Controllers
         {
             return provider.GetAuthors(true).Select(a => AuthorListViewModel.FromAuthor(a));
         }
+
+        public AuthorDetailsViewModel Get(int id)
+        {
+            return null;
+        }
     }
 }
