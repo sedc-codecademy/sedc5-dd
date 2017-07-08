@@ -33,7 +33,8 @@ namespace AuthorsWebApi.Controllers
 
         public AuthorDetailsViewModel Get(int id)
         {
-            return null;
+            Author author = provider.GetAuthorById(id);
+            return AuthorDetailsViewModel.FromAuthor(author);
         }
     }
 }

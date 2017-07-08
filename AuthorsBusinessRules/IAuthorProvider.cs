@@ -13,5 +13,6 @@ namespace AuthorsBusinessRules
         bool DeleteAuthor(Author author);
 
         IEnumerable<Author> GetAuthors(bool includeNovels, string nameFragment = "");
+        Author GetAuthorById(int authorId);
     }
 }

@@ -79,5 +79,17 @@ namespace AuthorsBusinessRules
             }
             return author;
         }
+
+        public Author GetAuthorById(int authorId)
+        {
+            var author = authorRepo.GetAuthorById(authorId);
+            author.Novels = novelRepo.GetNovelsByAuthor(authorId, ref Counter).ToList();
+
+            foreach (var novel in author.Novels)
+            {
+                novel.Author = author;
+            }
+            return author;
+        }
     }
 }
