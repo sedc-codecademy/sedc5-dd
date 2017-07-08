@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{53577F5B-73EC-41E8-A7D1-1FFEA7051B00}</ProjectGuid>
+    <ProjectGuid>{3D92874F-E18E-4E01-AD38-FFE02623D097}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>DapperDemo</RootNamespace>
-    <AssemblyName>DapperDemo</AssemblyName>
+    <RootNamespace>Schedule</RootNamespace>
+    <AssemblyName>Schedule</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -46,12 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Author.cs" />
-    <Compile Include="Award.cs" />
-    <Compile Include="Nomination.cs" />
-    <Compile Include="Novel.cs" />
+    <Compile Include="Group.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Subject.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

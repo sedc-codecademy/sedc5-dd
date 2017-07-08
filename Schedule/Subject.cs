@@ -4,20 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DapperDemo
+namespace Schedule
 {
-    public class Author
+    public class Subject
     {
         public int ID { get; set; }
         public string Name { get; set; }
-        public DateTime? DateOfBirth { get; set; }
-        public DateTime? DateOfDeath { get; set; }
 
-        public List<Novel> Novels { get; set; }
+        public List<Group> Groups { get; set; }
 
         public override string ToString()
         {
-            return $"#{ID}: {Name} ({Novels.Count} novels)";
+            return Name;
         }
     }
 }
