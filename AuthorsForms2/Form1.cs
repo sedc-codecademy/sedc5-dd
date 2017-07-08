@@ -1,4 +1,6 @@
-﻿using AuthorsDataAccess2;
+﻿using AuthorEntities2;
+using AuthorsBusinessRules;
+using AuthorsDataAccess2;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,18 +16,30 @@ namespace AuthorsForms2
 {
     public partial class fmMain : Form
     {
-        private string connectionString;
-
+        private IAuthorProvider authors;
+        
         public fmMain()
         {
             InitializeComponent();
-            connectionString = ConfigurationManager.ConnectionStrings["BooksDb"].ConnectionString;
+            var connectionString = ConfigurationManager.ConnectionStrings["BooksDb"].ConnectionString;
+            var authorRepo = new AuthorRepository(connectionString);
+            var novelsRepo = new NovelRepository(connectionString);
+
+            authors = new AuthorProvider(authorRepo, novelsRepo);
         }
 
         private void btnLoad_Click(object sender, EventArgs e)
         {
-            var repo = new AuthorRepository(connectionString);
-            lstAuthors.DataSource = repo.GetAllAuthors();
+            lstAuthors.DataSource = authors.GetAuthors(true);
+        }
+
+        private void lstAuthors_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lstAuthors.SelectedIndex == -1)
+                return;
+
+            var author = (Author)lstAuthors.SelectedItem;
+            lstNovels.DataSource = author.Novels;
         }
     }
 }

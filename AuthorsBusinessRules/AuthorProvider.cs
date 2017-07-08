@@ -11,10 +11,14 @@ namespace AuthorsBusinessRules
     public class AuthorProvider : IAuthorProvider
     {
         private IAuthorRepository authorRepo;
+        private INovelRepository novelRepo;
 
-        public AuthorProvider(IAuthorRepository authorRepo)
+        public static int Counter = 0;
+
+        public AuthorProvider(IAuthorRepository authorRepo, INovelRepository novelRepo)
         {
             this.authorRepo = authorRepo;
+            this.novelRepo = novelRepo;
         }
 
         public Author ChangeName(Author author, string newName)
@@ -32,16 +36,31 @@ namespace AuthorsBusinessRules
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Author> GetAuthors(string nameFragment = "")
+        public IEnumerable<Author> GetAuthors(bool includeNovels, string nameFragment = "")
         {
+            IEnumerable<Author> authors;
             if (string.IsNullOrEmpty(nameFragment))
             {
-                return authorRepo.GetAllAuthors();
+                authors = authorRepo.GetAllAuthors(ref Counter);
             } 
             else
             {
-                return authorRepo.GetAuthorsByName(nameFragment);
+                authors = authorRepo.GetAuthorsByName(nameFragment);
             }
+
+            if (includeNovels)
+            {
+                var allNovels = novelRepo.GetAllNovels(ref Counter);
+                foreach (var author in authors)
+                {
+                    author.Novels = allNovels.Where(n => n.AuthorID == author.Id).ToList();
+                    foreach (var novel in author.Novels)
+                    {
+                        novel.Author = author;
+                    }
+                }
+            }
+            return authors;
         }
 
         public Author RecordDeath(Author author, DateTime deathDate)

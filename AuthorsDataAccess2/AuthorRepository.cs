@@ -68,7 +68,7 @@ namespace AuthorsDataAccess2
             }
         }
 
-        public IEnumerable<Author> GetAllAuthors()
+        public IEnumerable<Author> GetAllAuthors(ref int counter)
         {
             List<Author> result = new List<Author>();
 
@@ -78,6 +78,7 @@ namespace AuthorsDataAccess2
 
                 using (SqlCommand command = new SqlCommand())
                 {
+                    counter++;
                     command.Connection = connection;
                     command.CommandText = "Select ID, Name, DateOfBirth, DateOfDeath from Authors ";
 
@@ -90,7 +91,6 @@ namespace AuthorsDataAccess2
                     }
 
                 }
-
             }
             return result;
         }

@@ -13,9 +13,11 @@ namespace AuthorEntities2
         public DateTime? BirthDay { get; set; }
         public DateTime? DeathDay { get; set; }
 
+        public List<Novel> Novels { get; set; }
+
         public override string ToString()
         {
-            return $"#{Id}: {Name} ({BirthDay} - {DeathDay})";
+            return $"{Name} ({Novels.Count} novels)";
         }
     }
 }

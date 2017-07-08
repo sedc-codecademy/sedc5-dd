@@ -1,4 +1,5 @@
 ﻿using AuthorEntities2;
+using AuthorsBusinessRules;
 using AuthorsDataAccess2;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,16 @@ namespace AuthorsConsole2
         {
             connectionString = ConfigurationManager.ConnectionStrings["BooksDb"].ConnectionString;
             IAuthorRepository repo = new AuthorRepository(connectionString);
+            INovelRepository novelRepo = new NovelRepository(connectionString);
 
+            IAuthorProvider provider = new AuthorProvider(repo, novelRepo);
+
+            var authors = provider.GetAuthors(false);
+            Console.WriteLine(authors.Count());
+
+            Console.WriteLine($"Total {AuthorProvider.Counter} database calls");
+
+            return;
             Console.WriteLine(" === Get Authors by name ===");
             PrintAuthors(repo.GetAuthorsByName("art"));
 

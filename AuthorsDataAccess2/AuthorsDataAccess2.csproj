@@ -42,6 +42,8 @@
   <ItemGroup>
     <Compile Include="AuthorRepository.cs" />
     <Compile Include="IAuthorRepository.cs" />
+    <Compile Include="INovelRepository.cs" />
+    <Compile Include="NovelRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

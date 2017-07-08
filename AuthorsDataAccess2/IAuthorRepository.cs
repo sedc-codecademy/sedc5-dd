@@ -10,7 +10,7 @@ namespace AuthorsDataAccess2
         Author UpdateAuthor(Author author);
         bool DeleteAuthor(int authorId);
 
-        IEnumerable<Author> GetAllAuthors();
+        IEnumerable<Author> GetAllAuthors(ref int counter);
         IEnumerable<Author> GetAuthorsByName(string nameFragment);
         Author GetAuthorById(int authorId);
     }

@@ -84,6 +84,10 @@
       <Project>{051BDF3F-DB07-476E-8F15-1689654FBE52}</Project>
       <Name>AuthorEntities2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AuthorsBusinessRules\AuthorsBusinessRules.csproj">
+      <Project>{266AAD23-5AC2-4744-AF36-2A4F8047D391}</Project>
+      <Name>AuthorsBusinessRules</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AuthorsDataAccess2\AuthorsDataAccess2.csproj">
       <Project>{1A0909F2-143F-41E8-A71D-E604871E760C}</Project>
       <Name>AuthorsDataAccess2</Name>
