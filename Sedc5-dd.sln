@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthorsBusinessRules", "Aut
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthorsWebApi", "AuthorsWebApi\AuthorsWebApi.csproj", "{638CC659-FEF5-44D6-9657-979E4F13761A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DapperDemo", "DapperDemo\DapperDemo.csproj", "{53577F5B-73EC-41E8-A7D1-1FFEA7051B00}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,10 @@ Global
 		{638CC659-FEF5-44D6-9657-979E4F13761A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{638CC659-FEF5-44D6-9657-979E4F13761A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{638CC659-FEF5-44D6-9657-979E4F13761A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53577F5B-73EC-41E8-A7D1-1FFEA7051B00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53577F5B-73EC-41E8-A7D1-1FFEA7051B00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53577F5B-73EC-41E8-A7D1-1FFEA7051B00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53577F5B-73EC-41E8-A7D1-1FFEA7051B00}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
