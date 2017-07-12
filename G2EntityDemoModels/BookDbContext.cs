@@ -11,6 +11,8 @@ namespace G2EntityDemoModels
     {
         public DbSet<Author> Authors { get; set; }
 
+        public DbSet<Novel> Novels { get; set; }
+
 
         public BookDbContext() : base("BooksDb")
         {

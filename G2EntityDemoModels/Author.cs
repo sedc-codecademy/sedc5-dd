@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace G2EntityDemoModels
 {
@@ -9,9 +11,11 @@ namespace G2EntityDemoModels
         public DateTime? DateOfBirth { get; set; }
         public DateTime? DateOfDeath { get; set; }
 
+        public virtual ICollection<Novel> Novels { get; set; }
+
         public override string ToString()
         {
-            return $"#{ID}: {Name}";
+            return $"#{ID}: {Name} ({Novels.Count()} novels)";
         }
     }
 }

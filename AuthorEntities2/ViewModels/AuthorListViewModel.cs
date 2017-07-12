@@ -10,10 +10,10 @@ namespace AuthorEntities2.ViewModels
     {
         private AuthorListViewModel() { }
 
-        public int ID { get; set; }
-        public string Name { get; set; }
-        public bool IsDead { get; set; }
-        public int NovelsCount { get; set; }
+        public int ID { get; private set; }
+        public string Name { get; private set; }
+        public bool IsDead { get; private set; }
+        public int NovelsCount { get; private set; }
 
         public static AuthorListViewModel FromAuthor(Author author)
         {
