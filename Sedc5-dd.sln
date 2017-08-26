@@ -51,6 +51,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "G2EntityDemoModels", "G2Ent
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "G2EntityConsole", "G2EntityConsole\G2EntityConsole.csproj", "{3A6D6075-487D-4244-9737-178B63A1C3DB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLogicTests", "BusinessLogicTests\BusinessLogicTests.csproj", "{53031988-6033-4C32-A6AD-0EAB984DAD4E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -137,6 +139,10 @@ Global
 		{3A6D6075-487D-4244-9737-178B63A1C3DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A6D6075-487D-4244-9737-178B63A1C3DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A6D6075-487D-4244-9737-178B63A1C3DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53031988-6033-4C32-A6AD-0EAB984DAD4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53031988-6033-4C32-A6AD-0EAB984DAD4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53031988-6033-4C32-A6AD-0EAB984DAD4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53031988-6033-4C32-A6AD-0EAB984DAD4E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -158,5 +164,6 @@ Global
 		{36E9E5A6-F8B2-44AF-BAF3-2EF37E8C4780} = {804AB11E-2659-4423-A7B8-4896DD4306FA}
 		{8BC65BC9-3302-4F3F-AB44-678E6EFD9833} = {C12FA7C9-2614-4893-8E49-391AF1D20329}
 		{3A6D6075-487D-4244-9737-178B63A1C3DB} = {C12FA7C9-2614-4893-8E49-391AF1D20329}
+		{53031988-6033-4C32-A6AD-0EAB984DAD4E} = {B76A968D-FF37-4901-9D42-42BF396E2604}
 	EndGlobalSection
 EndGlobal
